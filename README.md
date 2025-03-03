@@ -2,14 +2,19 @@
 
 ## 虚拟环境的创建
 ### 下载Miniconda
+```
 wget https://repo.anaconda.com/miniconda/Miniconda3-py39_24.7.1-0-Linux-aarch64.sh
 sh Miniconda3-py39_24.7.1-0-Linux-aarch64.sh
+```
 ### 创建虚拟环境
+```
 source ./Miniconda3/etc/profile.d/conda.sh
 conda create -n <env> python==3.9
 conda activate <env>
+```
 ## 软件的编译安装
 ### 依赖库的安装
+```
 eigen的安装
 module load eigen/3.3.8/bisheng2.1.0_hmpi1.1.1
 
@@ -39,11 +44,15 @@ make install
 
 测试环境是否安装完毕
 python3 -m pytest --pyargs hoomd
+```
 
 ## 测试案例的运行
 ### 测试案例下载
+```
 git clone https://github.com/glotzerlab/hoomd-benchmarks.git
+```
 ### 测试案例的迁移分析
+```
 #!/bin/bash
 #DSUB --job_type cosched:hmpi
 #DSUB -n single_node_test
@@ -65,8 +74,10 @@ module load hmpi/1.3.1.spc001/bisheng3.1.0
 
 ROOT_DIR=$(pwd)
 ROOT_DIR/software/DevKit-CLI-24.0.RC2-Linux-Kunpeng/devkit porting src-mig -i /path/to/hoomd-blue -s interpreted
+```
 
 ## 单机脚本
+```
 #!/bin/bash
 #DSUB --job_type cosched:hmpi
 #DSUB -n single_node_test
@@ -88,8 +99,10 @@ module load hmpi/1.3.1.spc001/bisheng3.1.0
 
 cd /path/to/hoomd-benchmarks
 time -p mpirun -x UCX_TLS=sm,ud_mlx5,rc_mlx5 --bind-to core --map-by socket --rank-by core --hostfile $CCS_HOST_FILE -n 128 python3 -m hoomd_benchmarks.md_pair_wca --device CPU -N 2000000 --benchmark_steps 100000 -v
+```
 
 ## 多机脚本
+```
 #!/bin/bash
 #DSUB --job_type cosched:hmpi
 #DSUB -n single_node_test
@@ -111,8 +124,10 @@ module load hmpi/1.3.1.spc001/bisheng3.1.0
 
 cd /path/to/hoomd-benchmarks
 time -p mpirun -x UCX_TLS=sm,ud_mlx5,rc_mlx5 --bind-to core --map-by socket --rank-by core --hostfile $CCS_HOST_FILE -n 1024 python3 -m hoomd_benchmarks.md_pair_wca --device CPU -N 2000000 --benchmark_steps 100000 -v
+```
 
 ## 性能分析
+```
 #!/bin/bash
 #DSUB --job_type cosched:hmpi
 #DSUB -n single_node_test
@@ -135,8 +150,10 @@ module load hmpi/1.3.1.spc001/bisheng3.1.0
 ROOT_DIR=$(pwd)
 cd /path/to/hoomd-benchmarks
 time -p mpirun -x UCX_TLS=sm,ud_mlx5,rc_mlx5 --bind-to core --map-by socket --rank-by core --hostfile $CCS_HOST_FILE -n 256 ROOT_DIR/software/DevKit-CLI-24.0.RC2-Linux-Kunpeng/devkit tuner hpc-perf -L detail python3 -m hoomd_benchmarks.md_pair_wca --device CPU -N 2000000 --benchmark_steps 10000 -v
+```
 
 ## IPM 分析
+```
 从官网上下载HPC-X和PLOTICUS并用WinSCP工具将压缩包传输到鲲鹏平台
 tar -xvf hpcx-v2.7.0-gcc-MLNX_OFED_LINUX-4.7-1.0.0.1-redhat8.0-aarch64.tbz #高版本的hpcx下并没有ipm工具，所以下载较低的版本
 tar -xvf ploticus242_linuxbin64.tar.gz
@@ -171,8 +188,10 @@ time -p mpirun --bind-to core --map-by socket --rank-by core --hostfile $CCS_HOS
 脚本运行之后会在hoomd-benchmarks文件夹下生成一个xml文件，利用hpcx下的ipm工具将其转化为html格式
 export IPM_PLOTICUS_BIN=/path/to/ploticus242/bin/pl
 /path/to/hpcx-v2.7.0-gcc-MLNX_OFED_LINUX-4.7-1.0.0.1-redhat8.0-aarch64/ompi/tests/ipm-2.0.6/bin/ipm_parse -html /path/to/.xml/
+```
 
 ## LTO+PGO
+```
 cd hoomd-blue
 mkdir build && cd build
 module load bisheng/3.1.0/bisheng3.1.0
@@ -215,3 +234,4 @@ cmake ../ -DCMAKE_C_COMPILER="$compilerPath/bin/clang" \
 -DCMAKE_AR="$compilerPath/bin/llvm-ar" \
 -DCMAKE_RANLIB="$compilerPath/bin/llvm-ranlib" \
 -G "Unix Makefiles"
+```
